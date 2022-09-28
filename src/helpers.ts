@@ -28,7 +28,5 @@ export const precalcData = (records: TableRecord[]) => {
         result.push({timestamp: timestamp, resources: prevResources})
     })
 
-    console.log("finished calc")
-
     return result
 }   

@@ -15,7 +15,7 @@ const App = () => {
     fetch("https://raw.githubusercontent.com/alexgavrushenko/lootbox/master/generated.log")
       .then(r => r.text())
       .then(text => {
-        setRecords(precalcData(normalizeResponse(text).slice(0, 1000)))
+        setRecords(precalcData(normalizeResponse(text).slice(0, 99999)))
       })
   }, [])
 
