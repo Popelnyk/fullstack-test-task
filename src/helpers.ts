@@ -1,8 +1,6 @@
 export const precalcData = (records: TableRecord[]) => {
-    let result = []
-    let calcs = {}
-    let resources = {}
-    let users = {}
+    let resources: any = {}
+    let users: any = {}
 
     records.forEach(record => {
         users = {...users, [record.name]: 0}
@@ -12,18 +10,25 @@ export const precalcData = (records: TableRecord[]) => {
         resources = {...resources, [record.resource]: {...users}}
     })
 
-    records.forEach(record => {
-        const { timestamp, name, resource, value } = record
-        //@ts-ignore
-     
+    let result: {timestamp: number, resources: typeof resources}[] = []
 
-        calcs = {...calcs, [timestamp]: {...resources, [resource]: {
-            //@ts-ignore
-            ...resources[resource],
-            //@ts-ignore
-            [name]: resources[resource][name] + value,
-        }}}
+    result.push({
+        timestamp: records[0].timestamp,
+        resources: resources
     })
 
-    console.log(calcs)
+    records.forEach((record: TableRecord, idx: number) => {
+        if (!idx) return
+
+        const { timestamp, name, resource, value } = record
+
+        const prevResources = {...result[idx - 1].resources}
+
+        prevResources[resource] = { ...prevResources[resource], [name]: value }
+        result.push({timestamp: timestamp, resources: prevResources})
+    })
+
+    console.log("finished calc")
+
+    return result
 }   

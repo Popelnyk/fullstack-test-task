@@ -4,7 +4,7 @@ import './App.css';
 
 const App = () => {
 
-  const [records, setRecords] = useState<TableRecord[] | null | void>(null)
+  const [records, setRecords] = useState<any>(null)
 
   const normalizeResponse = (response: string) => 
     response.split('\n').map(record => 
@@ -15,7 +15,7 @@ const App = () => {
     fetch("https://raw.githubusercontent.com/alexgavrushenko/lootbox/master/generated.log")
       .then(r => r.text())
       .then(text => {
-        setRecords(precalcData(normalizeResponse(text).slice(0, 10)))
+        setRecords(precalcData(normalizeResponse(text).slice(0, 1000)))
       })
   }, [])
 
