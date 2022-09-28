@@ -1,11 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { precalcData } from './helpers';
 import './App.css';
 
 const App = () => {
 
+  const [records, setRecords] = useState<TableRecord[] | null | void>(null)
+
+  const normalizeResponse = (response: string) => 
+    response.split('\n').map(record => 
+        record.length ? JSON.parse(record.replaceAll("'", '"')) : null
+      )
+
+  useEffect(() => {
+    fetch("https://raw.githubusercontent.com/alexgavrushenko/lootbox/master/generated.log")
+      .then(r => r.text())
+      .then(text => {
+        setRecords(precalcData(normalizeResponse(text).slice(0, 10)))
+      })
+  }, [])
+
   return (
     <div className="App">
-      Test
+      <ul className="List">
+        {/* {records && records.map((record, idx) => <li key={idx}>{record?.name}</li>)} */}
+      </ul>
     </div>
   );
 }
