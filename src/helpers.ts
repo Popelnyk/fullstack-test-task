@@ -6,7 +6,7 @@ export const precalcData = (records: RawRecord[]): ProcessedRecord[] => {
     users = { ...users, [record.name]: 0 };
   });
 
-  users = { ...users, total: 0 };
+  users = { ...users, __total: 0 };
 
   records.forEach((record) => {
     resources = { ...resources, [record.resource]: { ...users } };
@@ -23,17 +23,15 @@ export const precalcData = (records: RawRecord[]): ProcessedRecord[] => {
     if (!idx) return;
 
     const { timestamp, name, resource, value } = record;
-
     const prevResources = { ...result[idx - 1].resources };
 
     prevResources[resource] = {
       ...prevResources[resource],
       [name]: prevResources[resource][name] + value,
+      __total: prevResources[resource].__total + value
     };
     result.push({ timestamp: timestamp, resources: prevResources });
   });
-
-  console.log(result);
 
   return result;
 };

@@ -68,7 +68,7 @@ const App = () => {
     const result = Object.keys(resources).map((resourceName) =>
       Object.keys(resources[resourceName])
         .map((userName) => ({
-          name: userName,
+          name: userName === '__total' ? "" : userName,
           resource: resourceName,
           amount: resources[resourceName][userName],
         }))
