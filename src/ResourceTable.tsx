@@ -1,43 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
 import { Range, getTrackBackground } from "react-range";
-import { useTable } from "react-table";
 import { ColorRing } from "react-loader-spinner";
 import { precalcData, normalizeResponse } from "./helpers";
+import Table from "./Table";
 import "./ResourceTable.css";
-
-const Table = ({ columns, data }: TabelProps) => {
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({
-      columns,
-      data,
-    });
-
-  return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  );
-};
 
 const App = () => {
   const [records, setRecords] = useState<ProcessedRecord[]>();
