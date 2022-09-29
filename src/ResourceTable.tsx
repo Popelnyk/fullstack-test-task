@@ -3,12 +3,12 @@ import { Range, getTrackBackground } from "react-range";
 import { ColorRing } from "react-loader-spinner";
 import { precalcData, normalizeResponse } from "./helpers";
 import Table from "./Table";
-import "./ResourceTable.css";
+import styles from "./ResourceTable.module.css";
 
 const App = () => {
   const [records, setRecords] = useState<ProcessedRecord[]>();
   const [scrollbarValues, setScrollbarValues] = useState<number[]>([0]);
-  const [err, setErr] = useState<boolean>(false);
+  const [err, setErr] = useState<string | null>(null);
 
   const STEP = 1;
   const MIN = 0;
@@ -43,7 +43,7 @@ const App = () => {
     return result.reduce((prev, cur) => [...prev, ...cur]);
   };
 
-  const columns = useMemo(
+  const columns: TableColumn = useMemo(
     () =>
       [
         {
@@ -58,31 +58,23 @@ const App = () => {
           Header: "Resource",
           accessor: "amount",
         },
-      ] as TableColumn,
+      ],
     []
   );
 
   if (err) return <h1>{err}</h1>;
   else
     return (
-      <div className="App">
+      <div className={styles.resourceTable}>
         {records ? (
           <>
-            <div className="Table">
+            <div className={styles.tableWrapper}>
               <Table
                 columns={columns}
                 data={resourcesAmountAtCertainMomemnt(scrollbarValues[0])}
               />
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                flexWrap: "wrap",
-                margin: "2em",
-                width: "90%",
-              }}
-            >
+            <div className={styles.rangeWrapper}>
               <Range
                 min={MIN}
                 max={records.length - 1}
@@ -93,67 +85,39 @@ const App = () => {
                 }
                 renderTrack={({ props, children }) => (
                   <div
+                    className={styles.renderTrackWrap}
                     onMouseDown={props.onMouseDown}
                     onTouchStart={props.onTouchStart}
-                    style={{
-                      ...props.style,
-                      height: "36px",
-                      display: "flex",
-                      width: "100%",
-                    }}
+                    style={{...props.style}}
                   >
                     <div
+                    className={styles.renderTrack}
                       ref={props.ref}
                       style={{
-                        height: "0.25rem",
-                        width: "100%",
-                        borderRadius: "0.25rem",
                         background: getTrackBackground({
                           values: scrollbarValues,
-                          colors: ["#FF5733", "#ccc"],
+                          colors: ["#ff5733", "#ccc"],
                           min: MIN,
                           max: records.length - 1,
                         }),
-                        alignSelf: "center",
                       }}
                     >
                       {children}
                     </div>
                   </div>
                 )}
-                renderThumb={({ props, isDragged }) => (
-                  <div
-                    {...props}
-                    style={{
-                      ...props.style,
-                      height: "2rem",
-                      width: "2rem",
-                      borderRadius: "0.5rem",
-                      backgroundColor: "#FFF",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      boxShadow: "0 0.125rem 0.375rem #AAA",
-                    }}
-                  >
-                    <div
-                      style={{
-                        height: "0.5rem",
-                        width: "0.5rem",
-                        backgroundColor: isDragged ? "#FF5733" : "#CCC",
-                      }}
-                    />
-                  </div>
+                renderThumb={({ props }) => (
+                  <div {...props} className={styles.renderThumb} />
                 )}
               />
-              <output style={{ marginTop: "30px" }} id="output">
+              <output className={styles.rangeOutput} id="output">
                 {new Date(records[scrollbarValues[0]].timestamp).toUTCString()}
               </output>
             </div>
           </>
         ) : (
           <ColorRing
-            visible={true}
+            visible
             height="80"
             width="80"
             ariaLabel="blocks-loading"
