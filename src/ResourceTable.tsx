@@ -5,7 +5,7 @@ import { ColorRing } from "react-loader-spinner";
 import { precalcData, normalizeResponse } from "./helpers";
 import "./ResourceTable.css";
 
-function Table({ columns, data }: TabelProps) {
+const Table = ({ columns, data }: TabelProps) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns,
@@ -37,7 +37,7 @@ function Table({ columns, data }: TabelProps) {
       </tbody>
     </table>
   );
-}
+};
 
 const App = () => {
   const [records, setRecords] = useState<ProcessedRecord[]>();

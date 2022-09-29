@@ -26,9 +26,14 @@ export const precalcData = (records: RawRecord[]): ProcessedRecord[] => {
 
     const prevResources = { ...result[idx - 1].resources };
 
-    prevResources[resource] = { ...prevResources[resource], [name]: value };
+    prevResources[resource] = {
+      ...prevResources[resource],
+      [name]: prevResources[resource][name] + value,
+    };
     result.push({ timestamp: timestamp, resources: prevResources });
   });
+
+  console.log(result);
 
   return result;
 };
@@ -40,6 +45,5 @@ export const normalizeResponse = (response: string) => {
       record.length ? JSON.parse(record.replaceAll("'", '"')) : null
     );
 
-  result.pop();
-  return result;
+  return result.filter((record) => record);
 };
