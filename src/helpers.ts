@@ -28,7 +28,7 @@ export const precalcData = (records: RawRecord[]): ProcessedRecord[] => {
     prevResources[resource] = {
       ...prevResources[resource],
       [name]: prevResources[resource][name] + value,
-      __total: prevResources[resource].__total + value
+      __total: prevResources[resource].__total + value,
     };
     result.push({ timestamp: timestamp, resources: prevResources });
   });
@@ -45,3 +45,6 @@ export const normalizeResponse = (response: string) => {
 
   return result.filter((record) => record);
 };
+
+export const STEP = 1;
+export const MIN_RANGE_VALUE = 0;

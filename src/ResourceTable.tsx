@@ -1,7 +1,12 @@
 import { useEffect, useState, useMemo } from "react";
 import { Range, getTrackBackground } from "react-range";
 import { ColorRing } from "react-loader-spinner";
-import { precalcData, normalizeResponse } from "./helpers";
+import {
+  precalcData,
+  normalizeResponse,
+  STEP,
+  MIN_RANGE_VALUE,
+} from "./helpers";
 import Table from "./Table";
 import styles from "./ResourceTable.module.css";
 
@@ -9,9 +14,6 @@ const App = () => {
   const [records, setRecords] = useState<ProcessedRecord[]>();
   const [scrollbarValues, setScrollbarValues] = useState<number[]>([0]);
   const [err, setErr] = useState<string | null>(null);
-
-  const STEP = 1;
-  const MIN = 0;
 
   useEffect(() => {
     fetch(
@@ -30,35 +32,34 @@ const App = () => {
     if (!records) return [];
 
     const resources = records[timestampIndex].resources;
-    const result = Object.keys(resources).map((resourceName) =>
-      Object.keys(resources[resourceName])
-        .map((userName) => ({
-          name: userName === '__total' ? "" : userName,
+    const result = Object.entries(resources).map(([resourceName, users]) =>
+      Object.keys(users)
+        .map((userName: string) => ({
+          name: userName === "__total" ? "" : userName,
           resource: resourceName,
           amount: resources[resourceName][userName],
         }))
         .sort((a, b) => b.amount - a.amount)
     );
 
-    return result.reduce((prev, cur) => [...prev, ...cur]);
+    return result.flat();
   };
 
   const columns: TableColumn = useMemo(
-    () =>
-      [
-        {
-          Header: "User",
-          accessor: "name",
-        },
-        {
-          Header: "Resource",
-          accessor: "resource",
-        },
-        {
-          Header: "Resource",
-          accessor: "amount",
-        },
-      ],
+    () => [
+      {
+        Header: "User",
+        accessor: "name",
+      },
+      {
+        Header: "Resource",
+        accessor: "resource",
+      },
+      {
+        Header: "Resource",
+        accessor: "amount",
+      },
+    ],
     []
   );
 
@@ -76,7 +77,7 @@ const App = () => {
             </div>
             <div className={styles.rangeWrapper}>
               <Range
-                min={MIN}
+                min={MIN_RANGE_VALUE}
                 max={records.length - 1}
                 step={STEP}
                 values={scrollbarValues}
@@ -88,16 +89,16 @@ const App = () => {
                     className={styles.renderTrackWrap}
                     onMouseDown={props.onMouseDown}
                     onTouchStart={props.onTouchStart}
-                    style={{...props.style}}
+                    style={{ ...props.style }}
                   >
                     <div
-                    className={styles.renderTrack}
+                      className={styles.renderTrack}
                       ref={props.ref}
                       style={{
                         background: getTrackBackground({
                           values: scrollbarValues,
                           colors: ["#ff5733", "#ccc"],
-                          min: MIN,
+                          min: MIN_RANGE_VALUE,
                           max: records.length - 1,
                         }),
                       }}
