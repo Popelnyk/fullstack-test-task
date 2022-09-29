@@ -6,6 +6,8 @@ export const precalcData = (records: RawRecord[]): ProcessedRecord[] => {
         users = {...users, [record.name]: 0}
     })
 
+    users = {...users, total: 0}
+
     records.forEach(record => {
         resources = {...resources, [record.resource]: {...users}}
     })
