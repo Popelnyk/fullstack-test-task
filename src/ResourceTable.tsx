@@ -46,7 +46,6 @@ const App = () => {
 
   const STEP = 1;
   const MIN = 0;
-  const MAX = 99999;
 
   useEffect(() => {
     fetch(
@@ -97,7 +96,7 @@ const App = () => {
     []
   );
 
-  if (err) return <h6>{err}</h6>;
+  if (err) return <h1>{err}</h1>;
   else
     return (
       <div className="App">
@@ -120,7 +119,7 @@ const App = () => {
             >
               <Range
                 min={MIN}
-                max={MAX}
+                max={records.length - 1}
                 step={STEP}
                 values={scrollbarValues}
                 onChange={(scrollbarValues) =>
@@ -147,7 +146,7 @@ const App = () => {
                           values: scrollbarValues,
                           colors: ["#FF5733", "#ccc"],
                           min: MIN,
-                          max: MAX,
+                          max: records.length - 1,
                         }),
                         alignSelf: "center",
                       }}
