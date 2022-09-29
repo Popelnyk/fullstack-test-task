@@ -1,46 +1,19 @@
-# Getting Started with Create React App
+## 1. Data streaming. If the scroller is at its maximum timestamp, get fresh data from the service and update the table.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+0. if the scrollbar at its maximum -- make new request to the server
 
-## Available Scripts
+1. if new data is added to the table and we have cached previous data we can merge previous data + new data, without recalculating whole table,
+because we have result at last timestamp (e.g take results for the last timestamp + add new values === new record for table)
 
-In the project directory, you can run:
+2. if we are not sure if fresh data is partly the same with previous (e.g first timestamp of fresh data is far away from last timestamp of old data) -- we can just recalculate data
 
-### `npm start`
+## 2. Performance. How to optimize rerendering when the scroller moves if the original JSON has 100K entries (1000 users, 10 resources, 10 events - eventually display a table of ~10K lines).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+We can use react-virtualized (https://github.com/bvaughn/react-virtualized), or react-window (https://github.com/bvaughn/react-window)
+or
+Precalc all values + use React.Memo (maybe)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 3. Improvement. How you can change the component and the API of the service when the number of users scales up.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. use pagination. 
+2. move all heavy-logic to the server-side
