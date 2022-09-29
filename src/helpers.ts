@@ -1,43 +1,45 @@
 export const precalcData = (records: RawRecord[]): ProcessedRecord[] => {
-    let resources: Resources = {}
-    let users: Users = {}
+  let resources: Resources = {};
+  let users: Users = {};
 
-    records.forEach(record => {
-        users = {...users, [record.name]: 0}
-    })
+  records.forEach((record) => {
+    users = { ...users, [record.name]: 0 };
+  });
 
-    users = {...users, total: 0}
+  users = { ...users, total: 0 };
 
-    records.forEach(record => {
-        resources = {...resources, [record.resource]: {...users}}
-    })
+  records.forEach((record) => {
+    resources = { ...resources, [record.resource]: { ...users } };
+  });
 
-    let result: ProcessedRecord[] = []
+  let result: ProcessedRecord[] = [];
 
-    result.push({
-        timestamp: records[0].timestamp,
-        resources: resources
-    })
+  result.push({
+    timestamp: records[0].timestamp,
+    resources: resources,
+  });
 
-    records.forEach((record: RawRecord, idx: number) => {
-        if (!idx) return
+  records.forEach((record: RawRecord, idx: number) => {
+    if (!idx) return;
 
-        const { timestamp, name, resource, value } = record
+    const { timestamp, name, resource, value } = record;
 
-        const prevResources = {...result[idx - 1].resources}
+    const prevResources = { ...result[idx - 1].resources };
 
-        prevResources[resource] = { ...prevResources[resource], [name]: value }
-        result.push({timestamp: timestamp, resources: prevResources})
-    })
+    prevResources[resource] = { ...prevResources[resource], [name]: value };
+    result.push({ timestamp: timestamp, resources: prevResources });
+  });
 
-    return result
-}   
+  return result;
+};
 
 export const normalizeResponse = (response: string) => {
-    const result = response.split('\n').map(record => 
+  const result = response
+    .split("\n")
+    .map((record) =>
       record.length ? JSON.parse(record.replaceAll("'", '"')) : null
-    )
+    );
 
-    result.pop()
-    return result
-}
+  result.pop();
+  return result;
+};
