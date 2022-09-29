@@ -9,11 +9,11 @@ because we have result at last timestamp (e.g take results for the last timestam
 
 ## 2. Performance. How to optimize rerendering when the scroller moves if the original JSON has 100K entries (1000 users, 10 resources, 10 events - eventually display a table of ~10K lines).
 
-We can use react-virtualized (https://github.com/bvaughn/react-virtualized), or react-window (https://github.com/bvaughn/react-window)
-or
 Precalc all values + use React.Memo (maybe)
+Make each line in a table as a component and cache it
 
 ## 3. Improvement. How you can change the component and the API of the service when the number of users scales up.
 
 1. use pagination. 
 2. move all heavy-logic to the server-side
+3. We can use react-virtualized (https://github.com/bvaughn/react-virtualized), or react-window (https://github.com/bvaughn/react-window)
